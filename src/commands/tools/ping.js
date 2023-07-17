@@ -19,7 +19,7 @@ module.exports = {
     .setThumbnail(client.user.displayAvatarURL())
 
     
-    await interaction.editReply({ content: "Here is your ping!" });
+    await interaction.editReply({ content: "Here is you go!" });
 
     await interaction.channel.send({ embeds: [embed]});
   }
