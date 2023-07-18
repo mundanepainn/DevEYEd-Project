@@ -10,7 +10,7 @@ module.exports = {
     
     const newMessage = `**Client Ping:** *${
       message.createdTimestamp - interaction.createdTimestamp
-    }ms*\n\n**API Latency:** *${client.ws.ping}ms*`;
+    }ms*\n**API Latency:** *${client.ws.ping}ms*`;
     
     const embed = new EmbedBuilder()
     .setTitle('Pong! :ping_pong:')

@@ -1,9 +1,13 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const {
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  EmbedBuilder,
+} = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("kick")
-    .setDescription("kick a user from the server")
+    .setDescription("Kicks a user from the server")
     .addUserOption((option) =>
       option
         .setName("user")
@@ -16,11 +20,14 @@ module.exports = {
         .setDescription("The reason for the kick")
         .setRequired(false)
     )
-    .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers),
+    .setDefaultMemberPermissions(PermissionFlagsBits.kickMembers),
 
   async execute(interaction) {
     const kickUser = interaction.options.getUser("user");
-    const kickMember = await interaction.guild.members.fetch(kickUser.id);
+    const kickMember = await interaction.guild.members
+      .fetch(kickUser.id)
+      .catch((err) => console.log("User is not in this server"));
+    const guild = interaction.guild;
 
     if (!kickMember)
       return await interaction.reply({
@@ -31,9 +38,17 @@ module.exports = {
     let reason = interaction.options.getString("reason");
     if (!reason) reason = "No reason provided...";
 
+    const memberEmbed = new EmbedBuilder()
+      .setColor(0x000)
+      .setTitle("You have been Kicked!")
+      .setDescription(`Reason: ${reason}`)
+      .setThumbnail(guild.iconURL())
+      .setFooter({ text: `Server: ${guild.name}` })
+      .setTimestamp();
+
     await kickMember
       .send({
-        content: `You have been kicked from a server! **Server:** ${interaction.guild.name}; **Reason:** ${reason}`,
+        embeds: [memberEmbed],
       })
       .catch((err) =>
         console.log(
@@ -41,10 +56,19 @@ module.exports = {
         )
       );
 
-    await kickMember.kick({ reason: reason }).catch((err) => console.error(err));
+    await kickMember
+      .kick({ reason: reason })
+      .catch((err) => console.error(err));
+
+    const guildEmbed = new EmbedBuilder()
+      .setColor(0x000)
+      .setTitle(`A member has been successfully kicked!`)
+      .setDescription(`*Who?* ${kickUser}\n*Reason:* ${reason}`)
+      .setThumbnail(guild.iconURL())
+      .setTimestamp();
 
     await interaction.reply({
-      content: `User ${kickUser.tag} successfully kicked.`,
+      embeds: [guildEmbed],
     });
   },
 };

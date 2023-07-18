@@ -1,4 +1,8 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const {
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  EmbedBuilder,
+} = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -20,7 +24,10 @@ module.exports = {
 
   async execute(interaction) {
     const banUser = interaction.options.getUser("user");
-    const banMember = await interaction.guild.members.fetch(banUser.id);
+    const banMember = await interaction.guild.members
+      .fetch(banUser.id)
+      .catch((err) => console.log("User is not in this server"));
+    const guild = interaction.guild;
 
     if (!banMember)
       return await interaction.reply({
@@ -31,9 +38,17 @@ module.exports = {
     let reason = interaction.options.getString("reason");
     if (!reason) reason = "No reason provided...";
 
+    const memberEmbed = new EmbedBuilder()
+      .setColor(0x000)
+      .setTitle("You have been banned!")
+      .setDescription(`Reason: ${reason}`)
+      .setThumbnail(guild.iconURL())
+      .setFooter({ text: `Server: ${guild.name}` })
+      .setTimestamp();
+
     await banMember
       .send({
-        content: `You have been banned from a server! Server: ${interaction.guild.name}; Reason: ${reason}`,
+        embeds: [memberEmbed],
       })
       .catch((err) =>
         console.log(
@@ -43,8 +58,15 @@ module.exports = {
 
     await banMember.ban({ reason: reason }).catch((err) => console.error(err));
 
+    const guildEmbed = new EmbedBuilder()
+      .setColor(0x000)
+      .setTitle(`A member has been successfully banned!`)
+      .setDescription(`*Who?* ${banUser}\n*Reason:* ${reason}`)
+      .setThumbnail(guild.iconURL())
+      .setTimestamp();
+
     await interaction.reply({
-      content: `User ${banUser.tag} successfully banned.`,
+      embeds: [guildEmbed],
     });
   },
 };
