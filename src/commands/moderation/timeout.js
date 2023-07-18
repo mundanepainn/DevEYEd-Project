@@ -32,8 +32,10 @@ module.exports = {
     const timeoutUser = interaction.options.getUser("user");
     const timeoutMember = await interaction.guild.members
       .fetch(timeoutUser.id)
-      .catch((err) => console.log("User does not exist or is not in this server"));
-    let duration = interaction.options.getInteger('time');
+      .catch((err) =>
+        console.log("User does not exist or is not in this server")
+      );
+    let duration = interaction.options.getInteger("time");
     const guild = interaction.guild;
 
     if (!timeoutMember)
