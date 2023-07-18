@@ -6,64 +6,73 @@ const {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("kick")
-    .setDescription("Kicks a user from the server")
+    .setName("timeout")
+    .setDescription("Timeout a user in the server")
     .addUserOption((option) =>
       option
         .setName("user")
-        .setDescription("the user you want to kick from the server")
+        .setDescription("the user you want to timeout")
         .setRequired(true)
+    )
+    .addIntegerOption((option) =>
+      option
+        .setName("time")
+        .setDescription("amount of time in minutes (default is a minute)")
+        .setRequired(false)
     )
     .addStringOption((option) =>
       option
         .setName("reason")
-        .setDescription("The reason for the kick")
+        .setDescription("The reason for the timeout")
         .setRequired(false)
     )
-    .setDefaultMemberPermissions(PermissionFlagsBits.kickMembers),
+    .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
 
   async execute(interaction) {
-    const kickUser = interaction.options.getUser("user");
-    const kickMember = await interaction.guild.members
-      .fetch(kickUser.id)
+    const timeoutUser = interaction.options.getUser("user");
+    const timeoutMember = await interaction.guild.members
+      .fetch(timeoutUser.id)
       .catch((err) => console.log("User does not exist or is not in this server"));
+    let duration = interaction.options.getInteger('time');
     const guild = interaction.guild;
 
-    if (!kickMember)
+    if (!timeoutMember)
       return await interaction.reply({
-        content: `${kickUser} mentioned is not in the server...`,
+        content: `${timeoutUser} mentioned is not in the server...`,
         ephemeral: true,
       });
+
+    if (!duration) duration = 1;
 
     let reason = interaction.options.getString("reason");
     if (!reason) reason = "No reason provided...";
 
     const memberEmbed = new EmbedBuilder()
       .setColor(0x000)
-      .setTitle("You have been Kicked!")
+      .setTitle("You have been timed out! Slow down!")
       .setDescription(`Reason: ${reason}`)
       .setThumbnail(guild.iconURL())
       .setFooter({ text: `Server: ${guild.name}` })
       .setTimestamp();
 
-    await kickMember
+    await timeoutMember
       .send({
         embeds: [memberEmbed],
       })
       .catch((err) =>
         console.log(
-          `User ${kickMember} did not receive kick message, is their DM's turned off?`
+          `User ${timeoutMember} did not receive timeout message, is their DM's turned off?`
         )
       );
 
-    await kickMember
-      .kick({ reason: reason })
+    await timeoutMember
+      .timeout(duration * 60 * 10000, `reason: ${reason}`)
       .catch((err) => console.error(err));
 
     const guildEmbed = new EmbedBuilder()
       .setColor(0x000)
-      .setTitle(`A member has been successfully kicked!`)
-      .setDescription(`*Who?* ${kickUser}\n*Reason:* ${reason}`)
+      .setTitle(`A member has been successfully timed out!`)
+      .setDescription(`*Who?* ${timeoutUser}\n*Reason:* ${reason}`)
       .setThumbnail(guild.iconURL())
       .setTimestamp();
 
