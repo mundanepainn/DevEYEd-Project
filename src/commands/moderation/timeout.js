@@ -44,6 +44,12 @@ module.exports = {
         ephemeral: true,
       });
 
+    if (timeoutUser == guild.ownerId)
+      return await interaction.reply({
+        content: `Cannot timeout the server owner`,
+        ephemeral: true,
+      });
+
     if (!duration) duration = 1;
 
     let reason = interaction.options.getString("reason");

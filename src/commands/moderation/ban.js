@@ -26,12 +26,20 @@ module.exports = {
     const banUser = interaction.options.getUser("user");
     const banMember = await interaction.guild.members
       .fetch(banUser.id)
-      .catch((err) => console.log("User does not exist or is not in this server"));
+      .catch((err) =>
+        console.log("User does not exist or is not in this server")
+      );
     const guild = interaction.guild;
 
     if (!banMember)
       return await interaction.reply({
         content: `${banUser} mentioned is not in the server...`,
+        ephemeral: true,
+      });
+
+    if (banUser == guild.ownerId)
+      return await interaction.reply({
+        content: `Cannot ban the server owner`,
         ephemeral: true,
       });
 

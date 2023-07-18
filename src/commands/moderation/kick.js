@@ -20,18 +20,26 @@ module.exports = {
         .setDescription("The reason for the kick")
         .setRequired(false)
     )
-    .setDefaultMemberPermissions(PermissionFlagsBits.kickMembers),
+    .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers),
 
   async execute(interaction) {
     const kickUser = interaction.options.getUser("user");
     const kickMember = await interaction.guild.members
       .fetch(kickUser.id)
-      .catch((err) => console.log("User does not exist or is not in this server"));
+      .catch((err) =>
+        console.log("User does not exist or is not in this server")
+      );
     const guild = interaction.guild;
 
     if (!kickMember)
       return await interaction.reply({
         content: `${kickUser} mentioned is not in the server...`,
+        ephemeral: true,
+      });
+
+    if (kickUser == guild.ownerId)
+      return await interaction.reply({
+        content: `Cannot kick the server owner`,
         ephemeral: true,
       });
 
