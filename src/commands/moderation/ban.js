@@ -31,7 +31,7 @@ module.exports = {
 
     if (!banMember)
       return await interaction.reply({
-        content: "User mentioned is not in the server...",
+        content: `${banUser} mentioned is not in the server...`,
         ephemeral: true,
       });
 
