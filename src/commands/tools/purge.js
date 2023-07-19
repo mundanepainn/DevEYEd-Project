@@ -36,7 +36,7 @@ module.exports = {
     .setTitle('Purge successful!')
     .setDescription(`${size} messages deleted!`)
 
-    await interaction.reply({ embeds: [embedSuccess] })
+    await interaction.reply({ embeds: [embedSuccess] }).then(msg => { setTimeout(() => msg.delete(), 10000) });
 
 
 
