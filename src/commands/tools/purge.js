@@ -18,7 +18,7 @@ module.exports = {
         .setRequired(false)
     ),
   async execute(interaction) {
-    let numberOfMessages = interaction.options.getInteger('number');
+    let numberOfMessages = interaction.options.getInteger("number");
 
     if (!numberOfMessages) numberOfMessages = 50;
 
@@ -30,15 +30,16 @@ module.exports = {
 
     if (numberOfMessages > 100) numberOfMessages = 100;
 
-    const { size } = await interaction.channel.bulkDelete(numberOfMessages, true).catch((err) => console.log('Purge command was unusuccessful...'));
+    const { size } = await interaction.channel
+      .bulkDelete(numberOfMessages, true)
+      .catch((err) => console.log("Purge command was unusuccessful..."));
 
     const embedSuccess = new EmbedBuilder()
-    .setTitle('Purge successful!')
-    .setDescription(`${size} messages deleted!`)
+      .setTitle("Purge successful!")
+      .setDescription(`${size} messages deleted!`);
 
-    await interaction.reply({ embeds: [embedSuccess] }).then(msg => { setTimeout(() => msg.delete(), 10000) });
-
-
-
+    await interaction.reply({ embeds: [embedSuccess] }).then((msg) => {
+      setTimeout(() => msg.delete(), 10000);
+    });
   },
 };
