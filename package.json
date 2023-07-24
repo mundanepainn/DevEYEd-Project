@@ -1,5 +1,5 @@
 {
-  "name": "DevEYEd",
+  "name": "deveyed",
   "version": "1.0.0",
   "description": "Personal project bot powered by node.js",
   "main": "src/bot.js",
