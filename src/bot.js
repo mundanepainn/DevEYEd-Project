@@ -13,12 +13,11 @@ const client = new Client({
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildVoiceStates
   ],
 });
 
 client.config = require("./config.json");
-
 client.distube = new DisTube(client, {
   leaveOnStop: false,
   emitNewSongOnly: true,
@@ -32,7 +31,6 @@ client.distube = new DisTube(client, {
 });
 
 client.commands = new Collection();
-client.emotes = client.config.emoji;
 client.commandArray = [];
 
 const functionFolders = fs.readdirSync(`./src/functions`);

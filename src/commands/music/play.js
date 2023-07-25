@@ -13,6 +13,7 @@ module.exports = {
     ),
 
   async execute(interaction, client) {
+    const play_emote = client.config.emoji.play;
     const link = interaction.options.getString("url").trim();
     const channel = interaction.member.voice.channel;
 
@@ -20,13 +21,17 @@ module.exports = {
 
     if (!channel)
       return interaction.reply({
-        embeds: result.setDescription("You must be connected to a channel!"),
+        embeds: [result.setDescription("You must be connected to a channel!")],
         ephemeral: true,
       });
 
     if (!link.startsWith("https://"))
       return interaction.reply({
-        embeds: result.setDescription("Please enter a correct audio link"),
+        embeds: [
+          result.setDescription(
+            "Please enter an audio link with https//' starter"
+          ),
+        ],
         ephemeral: true,
       });
 
@@ -36,14 +41,17 @@ module.exports = {
       link.includes("soundcloud.com") ||
       link.includes("spotify.com")
     )
-      client.distube
-        .play(channel, link)
-        .catch((err) =>
-          interaction.reply({
-            content: "Something went wrong with the link",
-            ephemeral: true,
-          })
-        );
-      return
+      client.distube.play(channel, link).catch((err) =>
+        interaction.reply({
+          content: "Something went wrong with the link",
+          ephemeral: true,
+        })
+      );
+    return interaction.reply({
+      embeds: [
+        result.setTitle("Now Playing:").setDescription(`${play_emote} ${link}`),
+      ],
+      ephemeral: false,
+    });
   },
 };
