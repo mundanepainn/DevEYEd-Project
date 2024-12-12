@@ -1,0 +1,16 @@
+npm i dotenv
+npm i discord.js
+npm i discord-api-types
+npm i distube
+npm i @discordjs/rest
+npm i @discordjs/opus
+npm i @distube/soundcloud
+npm i @distube/spotify
+npm i @distube/yt-dlp
+npm i @distube/ytdl-core
+npm i chalk
+npm i ffmpeg
+npm i ffmpeg-static
+npm i libsodium
+npm i libsodium-wrappers
+npm i ws
